@@ -168,13 +168,14 @@ public class GeofabrikService {
     private static Path downloadFile(URI uri, Path targetPath) {
 //        HttpResponse<Path> response;
         HttpResponse<InputStream> response;
-        try (HttpClient client = HttpClient.newBuilder().build()) {
+        try { 
+            HttpClient client = HttpClient.newBuilder().build();
             var request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml,application/x-gzip;q=0.9,*/*;q=0.8")
-                    .header("Accept-Encoding", "gzip")
-                    .GET()
-                    .build();
+                .uri(uri)
+                .header("Accept", "text/html,application/xhtml+xml,application/xml,application/x-gzip;q=0.9,*/*;q=0.8")
+                .header("Accept-Encoding", "gzip")
+                .GET()
+                .build();
             Files.createDirectories(targetPath.getParent());
 //            response = client.send(request, BodyHandlers.ofFile(targetPath));
             var bodyHandler = BodyHandlers.ofInputStream();
@@ -184,24 +185,11 @@ public class GeofabrikService {
 //                Files.delete(response.body());
                 throw new RuntimeException(String.format("The requested file (%s) could not be found", uri.toString()));
             case 200: {
-//                return response.body();
-                InputStream is;
-                var contentEncoding = response.headers().firstValue("Content-Encoding").orElse("none");
-                switch (contentEncoding) {
-                case "none":
-                    is = response.body();
-                    break;
-                case "gzip":
-                    is = new GZIPInputStream(response.body());
-                    break;
-                default:
-                    throw new RuntimeException(String.format("Unkown content encoding: %s", contentEncoding));
-                }
                 try (
+                    var is = createInputStream(response);
                     var os = new FileOutputStream(targetPath.toFile());
-                ) {
+                ){
                     is.transferTo(os);
-                    is.close();
                 }
                 return targetPath;
             }
@@ -215,6 +203,17 @@ public class GeofabrikService {
         }
     }
     
+    private static InputStream createInputStream(HttpResponse<InputStream> response) throws IOException {
+        var contentEncoding = response.headers().firstValue("Content-Encoding").orElse("none");
+        switch (contentEncoding) {
+        case "none":
+            return response.body();
+        case "gzip":
+            return new GZIPInputStream(response.body());
+        default:
+            throw new RuntimeException(String.format("Unkown content encoding: %s", contentEncoding));
+        }
+    }
     
     public static UpdateState parseState(Path stateFile) {
         var state = new UpdateState();
