@@ -1,0 +1,40 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="osm">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" name="changeset" type="changesettype">
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="version" type="xs:decimal"/>
+            <xs:attribute name="generator" type="xs:string"/>
+            <xs:attribute name="copyright" type="xs:string"/>
+            <xs:attribute name="attribution" type="xs:string"/>
+            <xs:attribute name="license" type="xs:string"/>
+        </xs:complexType>
+
+    </xs:element>
+    <xs:complexType name="tagtype">
+        <xs:sequence></xs:sequence>
+        <xs:attribute name="k" type="xs:string"/>
+        <xs:attribute name="v" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="changesettype">
+        <xs:sequence>
+            <xs:element name="tag" type="tagtype">
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:long"/>
+        <xs:attribute name="created_at" type="xs:string"/>
+        <xs:attribute name="open" type="xs:boolean"/>
+        <xs:attribute name="comments_count" type="xs:dateTime"/>
+        <xs:attribute name="changes_count" type="xs:dateTime"/>
+        <xs:attribute name="closed_at" type="xs:string"/>
+        <xs:attribute name="min_lat" type="xs:double"/>
+        <xs:attribute name="min_lon" type="xs:double"/>
+        <xs:attribute name="max_lat" type="xs:double"/>
+        <xs:attribute name="max_lon" type="xs:double"/>
+        <xs:attribute name="uid" type="xs:string"/>
+        <xs:attribute name="user" type="xs:string"/>
+    </xs:complexType>
+</xs:schema>
