@@ -129,7 +129,7 @@ public class GeofabrikService {
      * @return The path to the downloaded state file.
      */
     private Path downloadCountryStateFile() {
-        var source = String.format("http://%s/%s/%s-updates/%s", 
+        var source = String.format("http://%s/%s/%s/updates/%s", 
                 serverRoot, continent, country, stateFileName);
         var uri = createURI(source);
         var targetName = String.format("%s/%s/%s", continent, country, stateFileName);
@@ -252,7 +252,7 @@ public class GeofabrikService {
         long thousands = Math.floorMod(Math.floorDiv(sequenceNumber, 1000), 1000);
         long units = Math.floorMod(sequenceNumber, 1000);
 
-        return String.format("http://%s/%s/%s-updates/%03d/%03d", 
+        return String.format("http://%s/%s/%s/updates/%03d/%03d", 
                 serverRoot, continent, country, millions, thousands, units);
     }
 }
